@@ -96,10 +96,16 @@
                         </div>
 
                         <div class="col-12">
-                            <label for="remark" class="form-label fw-semibold small">Administrative Remark / Official Response <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="remark" class="form-label fw-semibold small mb-0">Administrative Remark / Official Response <span class="text-danger">*</span></label>
+                                <button type="button" id="btnAiDraftReply" class="btn btn-xs btn-outline-primary" style="font-size: 0.75rem; padding: 2px 8px;">
+                                    <i class="fas fa-magic me-1"></i> ✨ Generate AI Reply
+                                </button>
+                            </div>
                             <textarea name="remark" id="remark" rows="4" class="form-control @error('remark') is-invalid @enderror" placeholder="Write a clear institutional remark explaining the action taken or reason for status update (visible to student)..." required>{{ old('remark') }}</textarea>
-                            <div class="form-text small text-muted" style="font-size: 0.75rem;">
-                                <i class="fas fa-info-circle me-1"></i> If rejecting, a clear institutional justification is mandatory.
+                            <div class="form-text small text-muted d-flex justify-content-between flex-wrap gap-1" style="font-size: 0.75rem;">
+                                <span><i class="fas fa-info-circle me-1"></i> If rejecting, a clear institutional justification is mandatory.</span>
+                                <span id="aiReplyStatus" class="text-primary d-none"><i class="fas fa-spinner fa-spin me-1"></i> Drafting AI response...</span>
                             </div>
                         </div>
 
@@ -208,3 +214,50 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const btnAiDraft = document.getElementById('btnAiDraftReply');
+    const remarkArea = document.getElementById('remark');
+    const statusSelect = document.getElementById('status');
+    const aiStatus = document.getElementById('aiReplyStatus');
+
+    if (btnAiDraft) {
+        btnAiDraft.addEventListener('click', function () {
+            btnAiDraft.disabled = true;
+            aiStatus.classList.remove('d-none');
+
+            fetch("{{ route('ai.reply') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    subject: @json($complaint->subject),
+                    description: @json($complaint->description),
+                    status: statusSelect.value,
+                    department_name: @json($complaint->department->name ?? 'Campus Administration')
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btnAiDraft.disabled = false;
+                aiStatus.classList.add('d-none');
+                if (data.success && data.reply) {
+                    remarkArea.value = data.reply;
+                    remarkArea.focus();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                btnAiDraft.disabled = false;
+                aiStatus.classList.add('d-none');
+            });
+        });
+    }
+});
+</script>
+@endpush

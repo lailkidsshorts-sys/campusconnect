@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
             datasets: [{
                 label: 'Total Complaints',
                 data: {!! json_encode($departmentChart['data']) !!},
-                backgroundColor: '#0c7347',
+                backgroundColor: '#1E3A8A',
                 borderRadius: 6,
             }]
         },
@@ -267,8 +267,8 @@ document.addEventListener('DOMContentLoaded', function () {
             datasets: [{
                 label: 'Daily Complaints',
                 data: {!! json_encode($trendsChart['data']) !!},
-                borderColor: '#0c7347',
-                backgroundColor: 'rgba(12, 115, 71, 0.08)',
+                borderColor: '#2563EB',
+                backgroundColor: 'rgba(37, 99, 235, 0.08)',
                 fill: true,
                 tension: 0.35,
                 borderWidth: 2,

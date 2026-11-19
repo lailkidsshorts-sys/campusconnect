@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>403 Forbidden - CampusConnect</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/biit-logo.png') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/campus-logo.svg') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="{{ asset('css/campusconnect.css') }}" rel="stylesheet">
@@ -15,7 +15,7 @@
             <div class="col-md-7 col-lg-5">
                 <div class="card p-4 p-md-5 border-0 shadow-sm">
                     <div class="mb-4">
-                        <img src="{{ asset('images/biit-logo.png') }}" alt="BIIT Logo" style="width: 72px;">
+                        <img src="{{ asset('images/campus-logo.svg') }}" alt="CampusConnect Logo" style="width: 64px; height: 64px;">
                     </div>
                     <div class="text-danger mb-3">
                         <i class="bi bi-shield-lock-fill" style="font-size: 3.5rem;"></i>

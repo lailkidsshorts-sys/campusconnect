@@ -16,9 +16,19 @@ class UserSeeder extends Seeder
 
         // 1. Super Administrator
         User::updateOrCreate(
+            ['email' => 'super@campusconnect.edu'],
+            [
+                'name' => 'Campus Central Administration',
+                'roll_no' => null,
+                'password' => $password,
+                'role' => UserRole::SUPER_ADMIN,
+                'department_id' => null,
+            ]
+        );
+        User::updateOrCreate(
             ['email' => 'super@biit.edu.pk'],
             [
-                'name' => 'BIIT Central Administration',
+                'name' => 'Campus Central Administration',
                 'roll_no' => null,
                 'password' => $password,
                 'role' => UserRole::SUPER_ADMIN,
@@ -28,10 +38,10 @@ class UserSeeder extends Seeder
 
         // 2. Department Admins
         $deptMap = [
-            'cafeteria' => ['email' => 'cafeteria@biit.edu.pk', 'name' => 'Cafeteria Administrator'],
-            'library' => ['email' => 'library@biit.edu.pk', 'name' => 'Library Administrator'],
-            'lab-it' => ['email' => 'labit@biit.edu.pk', 'name' => 'Lab & IT Administrator'],
-            'academic' => ['email' => 'academic@biit.edu.pk', 'name' => 'Academic Coordinator'],
+            'cafeteria' => ['email' => 'cafeteria@campusconnect.edu', 'alt_email' => 'cafeteria@biit.edu.pk', 'name' => 'Cafeteria Administration'],
+            'library' => ['email' => 'library@campusconnect.edu', 'alt_email' => 'library@biit.edu.pk', 'name' => 'Library Administration'],
+            'lab-it' => ['email' => 'labit@campusconnect.edu', 'alt_email' => 'labit@biit.edu.pk', 'name' => 'Laboratory & IT Administration'],
+            'academic' => ['email' => 'academic@campusconnect.edu', 'alt_email' => 'academic@biit.edu.pk', 'name' => 'Teaching & Academic Affairs'],
         ];
 
         foreach ($deptMap as $slug => $data) {
@@ -46,13 +56,33 @@ class UserSeeder extends Seeder
                     'department_id' => $dept->id,
                 ]
             );
+            User::updateOrCreate(
+                ['email' => $data['alt_email']],
+                [
+                    'name' => $data['name'],
+                    'roll_no' => null,
+                    'password' => $password,
+                    'role' => UserRole::DEPT_ADMIN,
+                    'department_id' => $dept->id,
+                ]
+            );
         }
 
         // 3. Demo Student
         User::updateOrCreate(
+            ['email' => 'student@campusconnect.edu'],
+            [
+                'name' => 'Campus Student',
+                'roll_no' => 'FA22-BCS-042',
+                'password' => $password,
+                'role' => UserRole::STUDENT,
+                'department_id' => null,
+            ]
+        );
+        User::updateOrCreate(
             ['email' => 'student@biit.edu.pk'],
             [
-                'name' => 'Muhammad Hamza',
+                'name' => 'Campus Student',
                 'roll_no' => 'BIIT-FA22-BCS-042',
                 'password' => $password,
                 'role' => UserRole::STUDENT,
@@ -62,10 +92,10 @@ class UserSeeder extends Seeder
 
         // Additional demo students
         $extraStudents = [
-            ['name' => 'Ayesha Khan', 'roll_no' => 'BIIT-FA22-BCS-015', 'email' => 'ayesha@biit.edu.pk'],
-            ['name' => 'Ali Raza', 'roll_no' => 'BIIT-SP23-BCS-088', 'email' => 'ali.raza@biit.edu.pk'],
-            ['name' => 'Zainab Fatima', 'roll_no' => 'BIIT-FA23-SE-003', 'email' => 'zainab@biit.edu.pk'],
-            ['name' => 'Usman Tariq', 'roll_no' => 'BIIT-SP24-SE-041', 'email' => 'usman@biit.edu.pk'],
+            ['name' => 'Ayesha Khan', 'roll_no' => 'FA22-BCS-015', 'email' => 'ayesha@campusconnect.edu'],
+            ['name' => 'Ali Raza', 'roll_no' => 'SP23-BCS-088', 'email' => 'ali.raza@campusconnect.edu'],
+            ['name' => 'Zainab Fatima', 'roll_no' => 'FA23-SE-003', 'email' => 'zainab@campusconnect.edu'],
+            ['name' => 'Usman Tariq', 'roll_no' => 'SP24-SE-041', 'email' => 'usman@campusconnect.edu'],
         ];
 
         foreach ($extraStudents as $student) {
