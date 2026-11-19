@@ -1,15 +1,15 @@
 @extends('layouts.auth')
 
-@section('title', 'Create Student Account - Barani Institute of Information Technology')
+@section('title', 'Create Student Account - CampusConnect')
 
 @section('content')
 <div class="container signup-wrap">
     <form method="POST" action="{{ route('signup.submit') }}" id="signupForm" novalidate>
         @csrf
-        <img src="{{ asset('logo.png') }}" alt="BIIT Logo" class="center" />
+        <img src="{{ asset('images/campus-logo.svg') }}" alt="CampusConnect Logo" class="center" />
         <h4 class="signup-title">
             Create Student Account <br />
-            Barani Institute CampusConnect
+            CampusConnect Portal
         </h4>
         <p class="signup-subtitle">Register to submit complaints and track departmental actions</p>
 
@@ -40,12 +40,12 @@
             </div>
 
             <div class="field">
-                <input type="text" name="roll_no" placeholder="Roll Number (e.g. BIIT-FA22-BCS-042)" value="{{ old('roll_no') }}" maxlength="25" autocomplete="off" class="text-uppercase @error('roll_no') is-invalid @enderror" required />
+                <input type="text" name="roll_no" placeholder="Roll Number (e.g. STU-2024-042)" value="{{ old('roll_no') }}" maxlength="25" autocomplete="off" class="text-uppercase @error('roll_no') is-invalid @enderror" required />
                 <small class="field-error" id="err-roll_no" role="alert">@error('roll_no'){{ $message }}@enderror</small>
             </div>
 
             <div class="field">
-                <input type="email" name="email" placeholder="Institutional Email (e.g. student@biit.edu.pk)" value="{{ old('email') }}" maxlength="100" autocomplete="email" class="@error('email') is-invalid @enderror" required />
+                <input type="email" name="email" placeholder="Institutional Email (e.g. student@campus.edu)" value="{{ old('email') }}" maxlength="100" autocomplete="email" class="@error('email') is-invalid @enderror" required />
                 <small class="field-error" id="err-email" role="alert">@error('email'){{ $message }}@enderror</small>
             </div>
 
@@ -101,14 +101,14 @@
             },
             roll_no: function (value) {
                 value = value.trim();
-                if (!value) { return 'University Roll Number is required.'; }
-                if (value.length < 5) { return 'Please enter a valid university roll number.'; }
+                if (!value) { return 'Student Roll Number is required.'; }
+                if (value.length < 3) { return 'Please enter a valid roll number.'; }
                 return '';
             },
             email: function (value) {
                 value = value.trim();
                 if (!value) { return 'Email address is required.'; }
-                if (!EMAIL_PATTERN.test(value)) { return 'Enter a valid email address (e.g. name@biit.edu.pk).'; }
+                if (!EMAIL_PATTERN.test(value)) { return 'Enter a valid institutional email address.'; }
                 return '';
             },
             password: function (value) {
@@ -145,7 +145,7 @@
 
             input.addEventListener('input', function () {
                 if (name === 'roll_no') {
-                    input.value = input.value.toUpperCase(); // Force uppercase for roll number
+                    input.value = input.value.toUpperCase();
                 }
                 if (touched[name] || input.classList.contains('is-invalid')) {
                     validateField(name);

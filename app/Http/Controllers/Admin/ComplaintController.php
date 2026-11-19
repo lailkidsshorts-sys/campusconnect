@@ -9,6 +9,8 @@ use App\Models\Category;
 use App\Models\Complaint;
 use App\Models\ComplaintResponse;
 use App\Models\Department;
+use App\Services\EmailNotificationService;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,6 +19,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ComplaintController extends Controller
 {
+    public function __construct(
+        protected NotificationService $notificationService,
+        protected EmailNotificationService $emailService
+    ) {}
+
     public function index(Request $request): View
     {
         $user = $request->user();
@@ -24,7 +31,6 @@ class ComplaintController extends Controller
 
         $query = Complaint::with(['user', 'department', 'category', 'issueType']);
 
-        // Scope dept admin strictly
         if (! $isSuperAdmin) {
             $query->where('department_id', $user->department_id);
         } else {
@@ -33,22 +39,18 @@ class ComplaintController extends Controller
             }
         }
 
-        // Category filter
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->input('category_id'));
         }
 
-        // Status filter
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
 
-        // Priority filter
         if ($request->filled('priority')) {
             $query->where('priority', $request->input('priority'));
         }
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -62,7 +64,6 @@ class ComplaintController extends Controller
             });
         }
 
-        // Date range filter
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->input('date_from'));
         }
@@ -111,7 +112,6 @@ class ComplaintController extends Controller
             'resolved_at' => $resolvedAt,
         ]);
 
-        // Create response log / audit trail
         ComplaintResponse::create([
             'complaint_id' => $complaint->id,
             'user_id' => $request->user()->id,
@@ -119,13 +119,14 @@ class ComplaintController extends Controller
             'status_after' => $newStatus,
         ]);
 
+        // Send notifications and email to student
+        $this->notificationService->notifyComplaintUpdated($complaint, $newStatus, $remark);
+        $this->emailService->sendStatusUpdatedEmail($complaint, $newStatus, $remark);
+
         return redirect()->route('admin.complaints.show', $complaint)
-            ->with('success', "Complaint status updated to '".ucfirst(str_replace('_', ' ', $newStatus))."' with administrative remark.");
+            ->with('success', "Complaint status updated to '".ucfirst(str_replace('_', ' ', $newStatus))."' and notification sent.");
     }
 
-    /**
-     * Export filtered complaints to CSV (Innovative Feature)
-     */
     public function exportCsv(Request $request): StreamedResponse
     {
         $user = $request->user();
@@ -162,7 +163,6 @@ class ComplaintController extends Controller
         return response()->stream(function () use ($query) {
             $handle = fopen('php://output', 'w');
 
-            // Header row
             fputcsv($handle, [
                 'Reference No',
                 'Date Submitted',

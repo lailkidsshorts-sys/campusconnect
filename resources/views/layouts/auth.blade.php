@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'CampusConnect - Barani Institute of Information Technology')</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/biit-logo.png') }}">
+    <title>@yield('title', 'CampusConnect - Smart Complaint Management')</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/campus-logo.svg') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,14 +21,6 @@
 
     <!-- Custom CampusConnect Theme -->
     <link href="{{ asset('css/campusconnect.css') }}?v={{ time() }}" rel="stylesheet">
-
-    <style>
-        body.auth-page {
-            background: linear-gradient(135deg, rgba(8, 84, 51, 0.85) 0%, rgba(12, 115, 71, 0.78) 50%, rgba(6, 60, 36, 0.90) 100%), 
-                        url("{{ asset('images/biit-campus.jpg') }}") no-repeat center center fixed !important;
-            background-size: cover !important;
-        }
-    </style>
 </head>
 <body class="d-flex align-items-center min-vh-100 py-3 py-md-5 auth-page">
     @yield('content')

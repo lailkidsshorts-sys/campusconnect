@@ -1,16 +1,15 @@
 @extends('layouts.auth')
 
-@section('title', 'Sign In - BIIT CampusConnect')
+@section('title', 'Sign In - CampusConnect')
 
 @section('content')
 <div class="container auth-wrap">
     <form method="POST" action="{{ route('login.submit') }}" id="loginForm">
         @csrf
-        <img src="{{ asset('logo.png') }}" alt="BIIT Logo" class="center" />
+        <img src="{{ asset('images/campus-logo.svg') }}" alt="CampusConnect Logo" class="center" />
         <h4 class="auth-title">
             Welcome to <br />
-            Barani Institute <br />
-            CampusConnect
+            CampusConnect Portal
         </h4>
         <p class="auth-subtitle">Smart Campus Complaint & Feedback Management System</p>
 
@@ -80,7 +79,7 @@
                 title: 'Validation Error',
                 text: 'Please enter both your institutional email and password.',
                 icon: 'error',
-                confirmButtonColor: '#0c7347'
+                confirmButtonColor: '#1E3A8A'
             });
             return false;
         }

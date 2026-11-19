@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>@yield('title', 'Administration') - BIIT CampusConnect</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/biit-logo.png') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Administration') - CampusConnect</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/campus-logo.svg') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +17,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
-    <!-- CampusConnect Custom BIIT Theme -->
-    <link href="{{ asset('css/campusconnect.css') }}" rel="stylesheet">
+    <!-- CampusConnect Custom Theme -->
+    <link href="{{ asset('css/campusconnect.css') }}?v={{ time() }}" rel="stylesheet">
 
     <!-- Chart.js via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -30,10 +31,10 @@
     <aside class="cc-sidebar" id="adminSidebar">
         <div class="d-flex align-items-center justify-content-between px-3 mb-2">
             <a href="{{ route('admin.dashboard') }}" class="cc-sidebar-brand p-0 border-0">
-                <img src="{{ asset('logo.png') }}" alt="BIIT Logo" class="cc-brand-logo bg-white rounded-circle p-1">
+                <img src="{{ asset('images/campus-logo.svg') }}" alt="CampusConnect Logo" class="cc-brand-logo bg-white rounded-circle p-1">
                 <div>
                     <div class="fw-bold fs-6 lh-1">CampusConnect</div>
-                    <small class="text-white-50" style="font-size: 0.72rem;">BIIT Administration</small>
+                    <small class="text-white-50" style="font-size: 0.72rem;">Central Administration</small>
                 </div>
             </a>
             <button class="btn btn-link text-white-50 d-lg-none p-1" onclick="toggleSidebar()">
@@ -43,7 +44,7 @@
 
         <div class="px-3 my-3">
             <div class="bg-black bg-opacity-25 p-2 rounded-3 text-center">
-                <span class="badge {{ Auth::user()->isSuperAdmin() ? 'bg-danger' : 'bg-warning text-dark' }} text-uppercase mb-1" style="font-size: 0.68rem;">
+                <span class="badge {{ Auth::user()->isSuperAdmin() ? 'bg-danger' : 'bg-primary' }} text-uppercase mb-1" style="font-size: 0.68rem;">
                     {{ Auth::user()->isSuperAdmin() ? 'Central Super Admin' : 'Department Admin' }}
                 </span>
                 <div class="small fw-semibold text-white text-truncate">
@@ -80,6 +81,23 @@
             </div>
 
             <div class="d-flex align-items-center gap-2 gap-sm-3">
+                <!-- Notification Bell -->
+                <div class="dropdown">
+                    <button class="notification-bell position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="adminNotifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge d-none notif-badge">0</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end notification-dropdown p-0 shadow-lg border-0" aria-labelledby="adminNotifBtn">
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light rounded-top">
+                            <span class="fw-bold small text-dark">Administrative Alerts</span>
+                            <button class="btn btn-link btn-sm text-primary p-0 mark-read-btn" style="font-size: 0.75rem; text-decoration: none;">Mark all read</button>
+                        </div>
+                        <div class="notif-list" style="max-height: 300px; overflow-y: auto;">
+                            <div class="p-3 text-center text-muted small">Loading alerts...</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="text-end d-none d-sm-block">
                     <div class="fw-semibold small text-dark lh-sm">{{ Auth::user()->name }}</div>
                     <div class="text-muted" style="font-size: 0.72rem;">{{ Auth::user()->email }}</div>
@@ -114,12 +132,13 @@
         </main>
 
         <footer class="bg-white border-top py-3 px-3 px-md-4 text-muted small text-center text-sm-start d-sm-flex justify-content-between">
-            <span>&copy; {{ date('Y') }} <strong>Barani Institute of Information Technology</strong></span>
-            <span class="d-none d-sm-inline">CampusConnect Administration</span>
+            <span>&copy; {{ date('Y') }} <strong>CampusConnect</strong> &bull; University Complaint & Feedback Management</span>
+            <span class="d-none d-sm-inline">Administrative Console</span>
         </footer>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -129,6 +148,51 @@
             sidebar.classList.toggle('show');
             backdrop.classList.toggle('show');
         }
+
+        (function() {
+            function fetchNotifications() {
+                $.get("{{ route('notifications.unread') }}", function(data) {
+                    if (data.count > 0) {
+                        $('.notif-badge').text(data.count).removeClass('d-none');
+                    } else {
+                        $('.notif-badge').addClass('d-none');
+                    }
+
+                    var html = '';
+                    if (!data.notifications || data.notifications.length === 0) {
+                        html = '<div class="p-3 text-center text-muted small">No recent alerts</div>';
+                    } else {
+                        data.notifications.forEach(function(item) {
+                            html += '<a href="' + item.action_url + '" class="notification-item ' + (item.is_read ? '' : 'unread') + '">';
+                            html += '<div class="d-flex align-items-start gap-2">';
+                            html += '<i class="' + item.icon + ' mt-1"></i>';
+                            html += '<div class="flex-grow-1">';
+                            html += '<div class="fw-semibold text-dark" style="font-size:0.83rem;">' + item.title + '</div>';
+                            html += '<div class="text-muted small" style="font-size:0.75rem;">' + item.message + '</div>';
+                            html += '<div class="text-muted" style="font-size:0.68rem; margin-top:2px;">' + item.created_at + '</div>';
+                            html += '</div></div></a>';
+                        });
+                    }
+                    $('.notif-list').html(html);
+                });
+            }
+
+            $('.mark-read-btn').on('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "{{ route('notifications.mark_read') }}",
+                    type: 'POST',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    success: function() {
+                        $('.notif-badge').addClass('d-none');
+                        $('.notification-item').removeClass('unread');
+                    }
+                });
+            });
+
+            fetchNotifications();
+            setInterval(fetchNotifications, 12000);
+        })();
     </script>
     @stack('scripts')
 </body>

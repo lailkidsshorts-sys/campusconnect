@@ -1,24 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --cc-primary: #0c7347;
-    --cc-primary-dark: #085433;
-    --cc-primary-light: #E8F5EE;
-    --cc-primary-hover: #0a5c38;
-    --cc-bg: #F4F7F5;
+    /* Professional Institutional Palette */
+    --cc-primary: #1E3A8A;
+    --cc-primary-dark: #0F172A;
+    --cc-primary-light: #EFF6FF;
+    --cc-primary-hover: #1D4ED8;
+    --cc-accent: #2563EB;
+    
+    --cc-bg: #F8FAFC;
     --cc-card-bg: #FFFFFF;
-    --cc-text-dark: #1F2A24;
-    --cc-text-muted: #5C6E64;
-    --cc-border: #D8E5DC;
-    --cc-danger: #c0392b;
+    --cc-text-dark: #0F172A;
+    --cc-text-muted: #64748B;
+    --cc-border: #E2E8F0;
+    --cc-danger: #DC2626;
 
     --cc-pending: #D97706;
     --cc-in-progress: #2563EB;
-    --cc-resolved: #0c7347;
-    --cc-rejected: #c0392b;
+    --cc-resolved: #059669;
+    --cc-rejected: #DC2626;
 
-    --bs-primary: #0c7347;
-    --bs-primary-rgb: 12, 115, 71;
+    --bs-primary: #1E3A8A;
+    --bs-primary-rgb: 30, 58, 138;
 }
 
 * {
@@ -33,35 +36,28 @@ body {
     overflow-x: hidden;
 }
 
-/* Background image on Login & Signup pages */
+/* ========================================================
+   AUTH PAGES & MODERN GENERIC BACKGROUND
+   ======================================================== */
 body.auth-page {
-    background-color: #0c7347,
-                url('../images/biit-campus.jpg') no-repeat center center fixed;
+    background: radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(30, 58, 138, 0.25) 0%, transparent 40%),
+                linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #1E3A8A 100%);
     background-size: cover;
     min-height: 100vh;
 }
 
-body.auth-page .auth-wrap,
-body.auth-page .signup-wrap {
-    background:rgba(255, 255, 255, 0.733);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-/* ========================================================
-   AUTH PAGES & CARDS (Derived from BIIT Portal Theme)
-   ======================================================== */
 .signup-wrap, .auth-wrap {
     box-sizing: border-box;
     width: 100%;
     max-width: 480px;
     margin-left: auto;
     margin-right: auto;
-    padding: 24px;
-    background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(12, 115, 71, 0.08);
-    border: 1px solid rgba(12, 115, 71, 0.12);
+    padding: 28px 24px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .auth-wrap form, .signup-wrap form {
@@ -72,19 +68,18 @@ img.center, .signup-wrap img.center, .auth-wrap img.center {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 100px;
-    max-width: 100%;
-    height: auto;
+    width: 72px;
+    height: 72px;
     object-fit: contain;
 }
 
 .signup-title, .auth-title {
     text-align: center;
-    margin-top: 12px;
+    margin-top: 14px;
     color: var(--cc-primary);
-    font-size: 20px;
+    font-size: 21px;
     font-weight: 700;
-    line-height: 1.35;
+    line-height: 1.3;
 }
 
 .signup-subtitle, .auth-subtitle {
@@ -96,7 +91,7 @@ img.center, .signup-wrap img.center, .auth-wrap img.center {
 }
 
 .input_field {
-    margin-top: 24px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -104,25 +99,29 @@ img.center, .signup-wrap img.center, .auth-wrap img.center {
 
 .input_field input,
 .input_field select,
-.input_field textarea {
+.input_field textarea,
+.form-control,
+.form-select {
     width: 100%;
     max-width: 100%;
-    padding: 11px 14px;
-    border: 1px solid #D0DDD5;
+    padding: 10px 14px;
+    border: 1px solid var(--cc-border);
     border-radius: 8px;
     font-size: 15px;
-    color: #1F2A24;
-    background-color: #FAFCFA;
+    color: var(--cc-text-dark);
+    background-color: #FAFAFA;
     transition: all 0.2s ease-in-out;
 }
 
 .input_field input:focus,
 .input_field select:focus,
-.input_field textarea:focus {
+.input_field textarea:focus,
+.form-control:focus,
+.form-select:focus {
     outline: none;
-    background-color: #ffffff;
-    border-color: var(--cc-primary);
-    box-shadow: 0 0 0 3px rgba(12, 115, 71, 0.15);
+    background-color: #FFFFFF;
+    border-color: var(--cc-accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .field {
@@ -149,31 +148,30 @@ img.center, .signup-wrap img.center, .auth-wrap img.center {
 .input_field textarea.is-invalid,
 .form-control.is-invalid {
     border-color: var(--cc-danger) !important;
-    background-color: #FFF8F8 !important;
+    background-color: #FEF2F2 !important;
 }
 
-/* Button & Links */
+/* Primary Button */
 button[type="submit"], .btn-primary {
     background-color: var(--cc-primary);
     border: 1px solid var(--cc-primary);
-    color: #ffffff;
+    color: #FFFFFF;
     font-weight: 600;
     border-radius: 8px;
     padding: 0.65rem 1.25rem;
-    width: 100%;
     font-size: 15px;
     letter-spacing: 0.3px;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(12, 115, 71, 0.2);
+    box-shadow: 0 2px 6px rgba(30, 58, 138, 0.2);
 }
 
 button[type="submit"]:hover, .btn-primary:hover,
 button[type="submit"]:focus, .btn-primary:focus {
-    background-color: var(--cc-primary-dark) !important;
-    border-color: var(--cc-primary-dark) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 14px rgba(12, 115, 71, 0.3);
+    background-color: var(--cc-primary-hover) !important;
+    border-color: var(--cc-primary-hover) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
 
 button:disabled, .btn:disabled {
@@ -182,18 +180,18 @@ button:disabled, .btn:disabled {
 }
 
 .register, a.register {
-    color: var(--cc-primary);
+    color: var(--cc-accent);
     font-weight: 600;
     text-decoration: none;
 }
 
 .register:hover, a.register:hover {
-    color: var(--cc-primary-dark);
+    color: var(--cc-primary);
     text-decoration: underline;
 }
 
 /* ========================================================
-   GLOBAL COMPONENTS & LAYOUTS
+   GLOBAL UI COMPONENTS
    ======================================================== */
 .btn-outline-primary {
     color: var(--cc-primary);
@@ -205,7 +203,7 @@ button:disabled, .btn:disabled {
 .btn-outline-primary:hover {
     background-color: var(--cc-primary);
     border-color: var(--cc-primary);
-    color: #ffffff;
+    color: #FFFFFF;
 }
 
 .text-primary {
@@ -218,7 +216,7 @@ button:disabled, .btn:disabled {
 
 .bg-light-primary {
     background-color: var(--cc-primary-light) !important;
-    color: var(--cc-primary-dark) !important;
+    color: var(--cc-primary) !important;
 }
 
 /* Cards */
@@ -226,12 +224,12 @@ button:disabled, .btn:disabled {
     border: 1px solid var(--cc-border);
     border-radius: 12px;
     background-color: var(--cc-card-bg);
-    box-shadow: 0 2px 8px rgba(12, 115, 71, 0.04);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card-header {
-    background-color: transparent;
+    background-color: #FFFFFF;
     border-bottom: 1px solid var(--cc-border);
     padding: 0.95rem 1.25rem;
     font-weight: 600;
@@ -261,8 +259,8 @@ button:disabled, .btn:disabled {
 }
 
 .badge-priority-low {
-    background-color: #F3F4F6;
-    color: #4B5563;
+    background-color: #F1F5F9;
+    color: #475569;
 }
 .badge-priority-medium {
     background-color: #E0E7FF;
@@ -274,17 +272,17 @@ button:disabled, .btn:disabled {
     font-weight: 600;
 }
 
-/* Navbars & Sidebars */
+/* Navbars */
 .cc-navbar {
-    background: #ffffff;
+    background: #FFFFFF;
     border-bottom: 1px solid var(--cc-border);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     padding: 0.65rem 1rem;
 }
 
 .cc-brand-logo {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
 }
 
@@ -292,8 +290,8 @@ button:disabled, .btn:disabled {
 .cc-sidebar {
     width: 260px;
     min-height: 100vh;
-    background-color: var(--cc-primary-dark);
-    color: #ffffff;
+    background-color: #0F172A;
+    color: #FFFFFF;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -305,16 +303,16 @@ button:disabled, .btn:disabled {
 
 .cc-sidebar-brand {
     padding: 0 1.25rem 1.25rem 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: #ffffff;
+    color: #FFFFFF;
     text-decoration: none;
 }
 
 .cc-sidebar .nav-link {
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.75);
     padding: 0.75rem 1.25rem;
     display: flex;
     align-items: center;
@@ -326,8 +324,8 @@ button:disabled, .btn:disabled {
 }
 
 .cc-sidebar .nav-link:hover, .cc-sidebar .nav-link.active {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.12);
 }
 
 .cc-main-content {
@@ -339,7 +337,7 @@ button:disabled, .btn:disabled {
 }
 
 .cc-topbar {
-    background: #ffffff;
+    background: #FFFFFF;
     border-bottom: 1px solid var(--cc-border);
     padding: 0.75rem 1.25rem;
 }
@@ -352,7 +350,7 @@ button:disabled, .btn:disabled {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.6);
     z-index: 1040;
 }
 
@@ -360,12 +358,72 @@ button:disabled, .btn:disabled {
     display: block;
 }
 
+/* Notification Bell Dropdown */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--cc-text-muted);
+    padding: 0.4rem 0.6rem;
+    font-size: 1.15rem;
+    border-radius: 8px;
+    transition: color 0.15s;
+}
+
+.notification-bell:hover {
+    color: var(--cc-primary);
+    background-color: var(--cc-primary-light);
+}
+
+.notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: #EF4444;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 10px;
+    line-height: 1;
+}
+
+.notification-dropdown {
+    width: 320px;
+    max-height: 380px;
+    overflow-y: auto;
+    border: 1px solid var(--cc-border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 0;
+}
+
+.notification-item {
+    padding: 10px 14px;
+    border-bottom: 1px solid #F1F5F9;
+    font-size: 0.85rem;
+    transition: background-color 0.15s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    color: var(--cc-text-dark);
+}
+
+.notification-item:hover {
+    background-color: #F8FAFC;
+}
+
+.notification-item.unread {
+    background-color: #EFF6FF;
+}
+
 /* Stat Widgets */
 .stat-widget {
     border-radius: 12px;
     border: 1px solid var(--cc-border);
     padding: 1.1rem;
-    background: #ffffff;
+    background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -412,13 +470,13 @@ button:disabled, .btn:disabled {
     height: 16px;
     border-radius: 50%;
     background: var(--cc-primary);
-    border: 3px solid #ffffff;
+    border: 3px solid #FFFFFF;
     box-shadow: 0 0 0 1px var(--cc-border);
 }
 
 /* Tables */
 .table thead th {
-    background-color: #F8FAF9;
+    background-color: #F8FAFC;
     color: var(--cc-text-muted);
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -434,10 +492,9 @@ button:disabled, .btn:disabled {
 }
 
 /* ========================================================
-   RESPONSIVE MEDIA QUERIES (Every device size handled)
+   RESPONSIVE MEDIA QUERIES (Zero Glitches Across Devices)
    ======================================================== */
 
-/* Tablets and small laptops */
 @media (max-width: 991.98px) {
     .cc-sidebar {
         transform: translateX(-100%);
@@ -448,6 +505,9 @@ button:disabled, .btn:disabled {
     .cc-main-content {
         margin-left: 0 !important;
     }
+    .notification-dropdown {
+        width: 280px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -455,7 +515,7 @@ button:disabled, .btn:disabled {
         width: calc(100% - 32px);
         margin-top: 16px;
         margin-bottom: 16px;
-        padding: 20px;
+        padding: 22px 18px;
     }
 
     .stat-widget {
@@ -473,43 +533,38 @@ button:disabled, .btn:disabled {
     }
 }
 
-/* Phones */
 @media (max-width: 576px) {
     .signup-wrap, .auth-wrap {
         width: calc(100% - 24px);
-        padding-left: 16px;
-        padding-right: 16px;
+        padding: 20px 16px;
         margin-top: 12px;
         margin-bottom: 12px;
     }
 
     img.center, .signup-wrap img.center, .auth-wrap img.center {
-        width: clamp(80px, 26vw, 110px);
+        width: 60px;
+        height: 60px;
     }
 
     .signup-title, .auth-title {
-        font-size: clamp(16px, 4.6vw, 20px);
+        font-size: 19px;
     }
 
     .input_field {
-        margin-top: 20px;
+        margin-top: 18px;
         gap: 12px;
     }
 
     .input_field input,
     .input_field select,
     .input_field textarea {
-        font-size: 16px !important; /* Prevents auto zoom in iOS Safari */
+        font-size: 16px !important;
         min-height: 46px;
     }
 
     button[type="submit"], .btn-primary {
         min-height: 48px;
         font-size: 16px;
-    }
-
-    .card {
-        border-radius: 10px;
     }
 
     .card-header {
@@ -521,23 +576,10 @@ button:disabled, .btn:disabled {
     }
 }
 
-/* Very small phones */
 @media (max-width: 360px) {
     .signup-wrap, .auth-wrap {
         width: calc(100% - 16px);
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-
-    .input_field {
-        margin-top: 16px;
-    }
-}
-
-/* Landscape phones */
-@media (max-height: 500px) and (orientation: landscape) {
-    img.center, .signup-wrap img.center, .auth-wrap img.center {
-        width: 70px;
+        padding: 16px 12px;
     }
 
     .input_field {

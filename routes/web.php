@@ -3,9 +3,11 @@
 use App\Http\Controllers\Admin\AnalyticsController as AdminAnalyticsController;
 use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\AiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Student\ComplaintController as StudentComplaintController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +30,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Guest Authentication Routes (with both conventional and custom aliases)
+// Guest Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
@@ -39,12 +41,21 @@ Route::middleware('guest')->group(function () {
     Route::post('/signup', [RegisterController::class, 'register'])->name('signup.submit');
 
     Route::get('/forgot-password', function () {
-        return redirect()->route('login')->with('info', 'Please contact the BIIT Administration desk or your department coordinator to reset your institutional credentials.');
+        return redirect()->route('login')->with('info', 'Please contact the Campus Administration desk to reset your credentials.');
     })->name('password.forgot');
 });
 
 // Authenticated Logout
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
+
+// Real-Time Notification System Endpoints
+Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/unread', [NotificationController::class, 'unread'])->name('unread');
+    Route::post('/mark-read', [NotificationController::class, 'markAllRead'])->name('mark_read');
+});
+
+// AI Smart Complaint Assistant (Gemini AI Integration)
+Route::middleware('auth')->post('/ai/analyze-complaint', [AiController::class, 'analyze'])->name('ai.analyze');
 
 // Student Portal Routes (Server-side Role Check)
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
