@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,5 +23,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+
+        // Auto-run migrations and seeds on cloud server if database is empty
+        try {
+            if (! Schema::hasTable('users')) {
+                Artisan::call('migrate', ['--force' => true]);
+                Artisan::call('db:seed', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Automatic migration check skipped or failed: ' . $e->getMessage());
+        }
     }
 }

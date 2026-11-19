@@ -85,3 +85,21 @@ Route::middleware(['auth', 'role:dept_admin,super_admin'])->prefix('admin')->nam
 
     Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics');
 });
+
+// Cloud Database Setup Endpoint (Auto Migrate & Seed)
+Route::get('/run-migrations', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'All database tables and seed accounts created successfully on cloud server!',
+            'output' => \Illuminate\Support\Facades\Artisan::output(),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+});
