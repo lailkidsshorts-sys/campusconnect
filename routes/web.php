@@ -120,3 +120,33 @@ Route::get('/seed-dummy-data', function () {
         ], 500);
     }
 });
+
+// Live Database Inspector / Viewer
+Route::get('/live-data', function () {
+    $tables = ['users', 'departments', 'categories', 'issue_types', 'complaints', 'complaint_responses', 'complaint_feedback', 'notifications'];
+    $currentTable = request('table', 'complaints');
+    if (! in_array($currentTable, $tables)) {
+        $currentTable = 'complaints';
+    }
+
+    $counts = [];
+    foreach ($tables as $t) {
+        try {
+            $counts[$t] = \Illuminate\Support\Facades\DB::table($t)->count();
+        } catch (\Throwable $e) {
+            $counts[$t] = 0;
+        }
+    }
+
+    $rows = [];
+    try {
+        $rows = \Illuminate\Support\Facades\DB::table($currentTable)
+            ->orderByDesc('id')
+            ->limit(100)
+            ->get();
+    } catch (\Throwable $e) {
+        $rows = [];
+    }
+
+    return view('live_data', compact('tables', 'currentTable', 'counts', 'rows'));
+});
