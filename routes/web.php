@@ -103,3 +103,20 @@ Route::get('/run-migrations', function () {
         ], 500);
     }
 });
+
+// Seed Dummy Data Endpoint (If tables already exist but need demo data)
+Route::get('/seed-dummy-data', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Dummy data (35+ complaints, feedback, and demo users) seeded successfully!',
+            'output' => \Illuminate\Support\Facades\Artisan::output(),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+});

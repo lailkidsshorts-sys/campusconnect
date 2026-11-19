@@ -140,7 +140,7 @@
     <script>
     (function() {
         function fetchNotifications() {
-            $.get("{{ route('notifications.unread') }}", function(data) {
+            $.get("/notifications/unread", function(data) {
                 if (data.count > 0) {
                     $('.notif-badge').text(data.count).removeClass('d-none');
                 } else {
@@ -169,7 +169,7 @@
         $('.mark-read-btn').on('click', function(e) {
             e.preventDefault();
             $.ajax({
-                url: "{{ route('notifications.mark_read') }}",
+                url: "/notifications/mark-read",
                 type: 'POST',
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 success: function() {

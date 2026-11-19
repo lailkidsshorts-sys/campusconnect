@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         issueTypeSelect.disabled = true;
         issueTypeSelect.innerHTML = '<option value="">Loading issues...</option>';
 
-        fetch("{{ url('student/categories') }}/" + categoryId + "/issue-types")
+        fetch("/student/categories/" + categoryId + "/issue-types")
             .then(response => response.json())
             .then(data => {
                 issueTypeSelect.innerHTML = '<option value="">-- Choose Issue Type --</option>';
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
             aiLoadingIndicator.classList.remove('d-none');
             aiSuggestionNotice.classList.add('d-none');
 
-            fetch("{{ route('ai.analyze') }}", {
+            fetch("/ai/analyze-complaint", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

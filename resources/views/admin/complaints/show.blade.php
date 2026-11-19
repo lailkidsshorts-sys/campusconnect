@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
             btnAiDraft.disabled = true;
             aiStatus.classList.remove('d-none');
 
-            fetch("{{ route('ai.reply') }}", {
+            fetch("/ai/generate-reply", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
