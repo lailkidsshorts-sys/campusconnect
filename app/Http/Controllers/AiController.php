@@ -28,4 +28,16 @@ class AiController extends Controller
 
         return response()->json($result);
     }
+
+    public function generateReply(Request $request): JsonResponse
+    {
+        $subject = (string) $request->input('subject', '');
+        $description = (string) $request->input('description', '');
+        $status = (string) $request->input('status', 'in_progress');
+        $departmentName = (string) $request->input('department_name', 'Campus Administration');
+
+        $result = $this->aiService->generateAdminReply($subject, $description, $status, $departmentName);
+
+        return response()->json($result);
+    }
 }

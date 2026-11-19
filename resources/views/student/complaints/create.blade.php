@@ -29,6 +29,28 @@
             <form action="{{ route('student.complaints.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
+                <!-- AI Smart Complaint Assistant Box -->
+                <div class="card bg-light border-0 shadow-none mb-3 mb-md-4 p-3 rounded-3" style="border-left: 4px solid var(--cc-blue) !important; background-color: #F0F4FA !important;">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary text-white"><i class="fas fa-brain me-1"></i> Gemini AI Assistant</span>
+                            <span class="small text-dark fw-semibold">Smart Complaint Categorization & Polish</span>
+                        </div>
+                        <button type="button" id="btnAiAssist" class="btn btn-sm btn-outline-primary fw-semibold">
+                            <i class="fas fa-magic me-1"></i> ✨ AI Polish & Suggest
+                        </button>
+                    </div>
+                    <p class="small text-muted mb-0 mt-2" style="font-size: 0.8rem;">
+                        Type your rough notes below (supports English or Roman Urdu), then click <strong>AI Polish & Suggest</strong> to automatically classify the category, detect department, set priority, and formulate a formal institutional report.
+                    </p>
+                    <div id="aiLoadingIndicator" class="small text-primary d-none py-1 mt-2">
+                        <i class="fas fa-spinner fa-spin me-1"></i> Analyzing details and generating professional draft...
+                    </div>
+                    <div id="aiSuggestionNotice" class="alert alert-success d-none py-2 px-3 small mb-0 mt-2 border-0">
+                        <i class="fas fa-check-circle me-1"></i> <strong>AI Analysis Applied:</strong> Category, department routing, priority, and polished wording have been filled in below. You can edit any field before submitting.
+                    </div>
+                </div>
+
                 <!-- Automatic Routing Alert -->
                 <div class="alert bg-light-primary border-0 mb-3 mb-md-4 d-flex align-items-start gap-2 p-3">
                     <i class="fas fa-shield-alt text-primary fs-5 mt-1"></i>
@@ -157,6 +179,93 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (categorySelect.value) {
         loadIssueTypes(categorySelect.value, previousIssueTypeId);
+    }
+
+    // AI Smart Assistant Handler
+    const btnAiAssist = document.getElementById('btnAiAssist');
+    const aiLoadingIndicator = document.getElementById('aiLoadingIndicator');
+    const aiSuggestionNotice = document.getElementById('aiSuggestionNotice');
+    const subjectInput = document.getElementById('subject');
+    const descriptionInput = document.getElementById('description');
+    const prioritySelect = document.getElementById('priority');
+
+    if (btnAiAssist) {
+        btnAiAssist.addEventListener('click', function () {
+            const currentSubject = subjectInput.value.trim();
+            const currentDesc = descriptionInput.value.trim();
+
+            if (!currentSubject && !currentDesc) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Rough Notes Needed',
+                    text: 'Please type a few words or sentences in the Subject or Description field (in English or Roman Urdu) for the AI to analyze.',
+                    confirmButtonColor: '#1E3A8A'
+                });
+                return;
+            }
+
+            btnAiAssist.disabled = true;
+            btnAiAssist.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Analyzing...';
+            aiLoadingIndicator.classList.remove('d-none');
+            aiSuggestionNotice.classList.add('d-none');
+
+            fetch("{{ route('ai.analyze') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    subject: currentSubject,
+                    description: currentDesc
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btnAiAssist.disabled = false;
+                btnAiAssist.innerHTML = '<i class="fas fa-magic me-1"></i> ✨ AI Polish & Suggest';
+                aiLoadingIndicator.classList.add('d-none');
+
+                if (data.success) {
+                    if (data.category_id) {
+                        categorySelect.value = data.category_id;
+                        loadIssueTypes(data.category_id, data.issue_type_id);
+                    }
+                    if (data.priority) {
+                        prioritySelect.value = data.priority;
+                    }
+                    if (data.polished_subject) {
+                        subjectInput.value = data.polished_subject;
+                    }
+                    if (data.polished_description) {
+                        descriptionInput.value = data.polished_description;
+                    }
+
+                    aiSuggestionNotice.classList.remove('d-none');
+                    aiSuggestionNotice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Notice',
+                        text: data.message || 'Unable to analyze text.',
+                        confirmButtonColor: '#1E3A8A'
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                btnAiAssist.disabled = false;
+                btnAiAssist.innerHTML = '<i class="fas fa-magic me-1"></i> ✨ AI Polish & Suggest';
+                aiLoadingIndicator.classList.add('d-none');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Assistant Error',
+                    text: 'Could not connect to the AI service. You can still fill out the form manually.',
+                    confirmButtonColor: '#1E3A8A'
+                });
+            });
+        });
     }
 });
 </script>

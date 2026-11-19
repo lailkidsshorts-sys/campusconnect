@@ -115,4 +115,61 @@ polished_description (constructive, formal 2-4 sentences explaining location and
             'polished_description' => $data['polished_description'] ?? 'Formal complaint report submitted for departmental review.',
         ];
     }
+
+    /**
+     * Generate a professional administrative response based on complaint details and status.
+     */
+    public function generateAdminReply(string $subject, string $description, string $status, string $departmentName): array
+    {
+        $apiKey = env('GEMINI_API_KEY');
+
+        if (! empty($apiKey)) {
+            try {
+                $prompt = "You are a professional campus administrator writing an official departmental response to a student's complaint on the CampusConnect system.
+Department: {$departmentName}
+Student's Complaint Subject: {$subject}
+Student's Complaint Description: {$description}
+Current Administrative Decision/Status: {$status}
+
+Write a polite, reassuring, formal response (2-3 concise sentences).
+- If status is 'in_progress': acknowledge the issue, confirm that our team has initiated inspection/corrective measures, and state that updates will follow.
+- If status is 'resolved': confirm that our departmental staff inspected and completely addressed the issue, and thank the student for reporting it to keep the campus running smoothly.
+- If status is 'rejected': politely state the reason why the request cannot be acted upon or how the student can redirect their query.
+- If status is 'pending': thank them for submitting and assure that it is queued for review.
+
+Do not include greetings or placeholders like [Student Name]. Return ONLY the remark text.";
+
+                $response = Http::timeout(5)->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
+                    'contents' => [
+                        ['parts' => [['text' => $prompt]]]
+                    ]
+                ]);
+
+                if ($response->successful()) {
+                    $replyText = trim($response->json('candidates.0.content.parts.0.text') ?? '');
+                    if (! empty($replyText)) {
+                        return [
+                            'success' => true,
+                            'reply' => $replyText,
+                        ];
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::info("Gemini API call skipped or timed out for reply: " . $e->getMessage());
+            }
+        }
+
+        // Smart fallback template
+        $fallback = match ($status) {
+            'in_progress' => "Thank you for bringing this matter regarding '{$subject}' to our attention. {$departmentName} has officially logged the ticket and assigned personnel to investigate and resolve it promptly.",
+            'resolved' => "We are pleased to inform you that {$departmentName} staff have inspected and successfully resolved the issue reported regarding '{$subject}'. Thank you for helping maintain a high standard of campus facilities.",
+            'rejected' => "After careful review by {$departmentName}, this matter cannot be processed under current facility guidelines or has been determined to be non-actionable at this time. Please contact the department office if further clarification is needed.",
+            default => "Your complaint regarding '{$subject}' has been received by {$departmentName} and is currently under administrative review.",
+        };
+
+        return [
+            'success' => true,
+            'reply' => $fallback,
+        ];
+    }
 }

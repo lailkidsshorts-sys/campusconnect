@@ -56,6 +56,7 @@ Route::middleware('auth')->prefix('notifications')->name('notifications.')->grou
 
 // AI Smart Complaint Assistant (Gemini AI Integration)
 Route::middleware('auth')->post('/ai/analyze-complaint', [AiController::class, 'analyze'])->name('ai.analyze');
+Route::middleware(['auth', 'role:dept_admin,super_admin'])->post('/ai/generate-reply', [AiController::class, 'generateReply'])->name('ai.reply');
 
 // Student Portal Routes (Server-side Role Check)
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
