@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A8A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background Shield Circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#grad)" />
+  <!-- Academic Cap / Connection Icon -->
+  <path d="M50 25 L80 40 L50 55 L20 40 Z" fill="#FFFFFF" />
+  <path d="M30 45 L30 65 Q50 78 70 65 L70 45 L50 55 Z" fill="#FFFFFF" opacity="0.9" />
+  <!-- Connect Node / Tassel -->
+  <path d="M78 41 L78 62 Q75 66 72 65" stroke="#FBBF24" stroke-width="3" fill="none" stroke-linecap="round" />
+  <circle cx="72" cy="67" r="3.5" fill="#FBBF24" />
+</svg>
