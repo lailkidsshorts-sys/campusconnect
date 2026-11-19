@@ -36,6 +36,18 @@ body {
     overflow-x: hidden;
 }
 
+.hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08) !important;
+}
+.backdrop-blur {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
 /* ========================================================
    AUTH PAGES & MODERN GENERIC BACKGROUND
    ======================================================== */

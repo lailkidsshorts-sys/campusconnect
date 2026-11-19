@@ -66,6 +66,21 @@
             <a class="nav-link" href="{{ route('admin.complaints.export') }}">
                 <i class="fas fa-file-csv me-2"></i> Export CSV
             </a>
+
+            @if (Auth::user()->isSuperAdmin())
+                <div class="px-3 mt-3 mb-1">
+                    <span class="text-uppercase fw-bold text-white-50" style="font-size: 0.68rem; letter-spacing: 0.05em;">Master Settings</span>
+                </div>
+                <a class="nav-link {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}" href="{{ route('admin.departments.index') }}">
+                    <i class="fas fa-building me-2"></i> Manage Departments
+                </a>
+                <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
+                    <i class="fas fa-tags me-2"></i> Categories & Issues
+                </a>
+                <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                    <i class="fas fa-users-cog me-2"></i> Manage User Accounts
+                </a>
+            @endif
         </nav>
     </aside>
 

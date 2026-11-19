@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AnalyticsController as AdminAnalyticsController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -84,6 +87,29 @@ Route::middleware(['auth', 'role:dept_admin,super_admin'])->prefix('admin')->nam
     Route::post('/complaints/{complaint}/status', [AdminComplaintController::class, 'updateStatus'])->name('complaints.update_status');
 
     Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics');
+
+    // Super Administrator Exclusive Management Routes
+    Route::middleware('role:super_admin')->group(function () {
+        // Departments Management
+        Route::get('/departments', [AdminDepartmentController::class, 'index'])->name('departments.index');
+        Route::post('/departments', [AdminDepartmentController::class, 'store'])->name('departments.store');
+        Route::put('/departments/{department}', [AdminDepartmentController::class, 'update'])->name('departments.update');
+        Route::delete('/departments/{department}', [AdminDepartmentController::class, 'destroy'])->name('departments.destroy');
+
+        // Categories & Issue Types Management
+        Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');
+        Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
+        Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::post('/categories/{category}/issue-types', [AdminCategoryController::class, 'storeIssueType'])->name('categories.issue_types.store');
+        Route::delete('/issue-types/{issueType}', [AdminCategoryController::class, 'destroyIssueType'])->name('issue_types.destroy');
+
+        // User Accounts Management
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+        Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    });
 });
 
 // Cloud Database Setup Endpoint (Auto Migrate & Seed)

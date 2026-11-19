@@ -81,6 +81,51 @@
     </div>
 </div>
 
+@if ($isSuperAdmin)
+    <!-- Super Admin Master Control Row -->
+    <div class="row g-2 g-md-3 mb-4">
+        <div class="col-12 col-md-4">
+            <a href="{{ route('admin.departments.index') }}" class="card border-0 shadow-sm p-3 text-decoration-none text-dark h-100" style="border-left: 4px solid var(--cc-primary) !important;">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-light text-primary">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Manage Departments</h6>
+                        <small class="text-muted">Add, edit, or configure university departments</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-md-4">
+            <a href="{{ route('admin.categories.index') }}" class="card border-0 shadow-sm p-3 text-decoration-none text-dark h-100" style="border-left: 4px solid var(--cc-accent) !important;">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-light text-primary">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Categories & Issue Types</h6>
+                        <small class="text-muted">Define problem types & routing mapping</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-md-4">
+            <a href="{{ route('admin.users.index') }}" class="card border-0 shadow-sm p-3 text-decoration-none text-dark h-100" style="border-left: 4px solid #059669 !important;">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">User Accounts Control</h6>
+                        <small class="text-muted">Manage student & department admin accounts</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+@endif
+
 <!-- Charts Row -->
 <div class="row g-3 g-md-4 mb-4">
     @if ($isSuperAdmin && $departmentChart)
