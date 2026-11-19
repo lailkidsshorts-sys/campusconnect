@@ -121,6 +121,25 @@ Route::get('/seed-dummy-data', function () {
     }
 });
 
+// Test Email Endpoint
+Route::get('/test-email', function () {
+    $to = request('to', 'hamzalail2181@gmail.com');
+    try {
+        \Illuminate\Support\Facades\Mail::raw('This is a live test email from CampusConnect notification service!', function ($m) use ($to) {
+            $m->to($to)->subject('CampusConnect | Live SMTP Test Successful');
+        });
+        return response()->json([
+            'status' => 'success',
+            'message' => "Test email sent successfully to {$to} via " . config('mail.mailers.smtp.host'),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+});
+
 // Live Database Inspector / Viewer
 Route::get('/live-data', function () {
     $tables = ['users', 'departments', 'categories', 'issue_types', 'complaints', 'complaint_responses', 'complaint_feedback', 'notifications'];
